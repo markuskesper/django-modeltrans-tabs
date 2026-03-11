@@ -219,6 +219,43 @@
                         })
                     }
                 }
+
+                if (field.type === "file" && field.dataset?.i18nHref && field.dataset?.i18nValue) {
+                    setTimeout(() => {
+                        const name = field.name
+                        const p = document.createElement("p")
+                        const spanHeading = document.createElement("span")
+                        const link = document.createElement("a")
+
+                        spanHeading.innerText = "Currently:" // TODO translate
+                        link.href = field.dataset?.i18nHref
+                        link.innerText = field.dataset?.i18nValue
+
+                        p.appendChild(spanHeading)
+                        p.appendChild(link)
+
+                        const clearLabel = document.createElement("label")
+                        const clearInput = document.createElement("input")
+                        const clearSpan = document.createElement("span")
+
+                        clearInput.type = "checkbox"
+                        clearInput.name = `${name}-clear`
+                        clearInput.id = `${name}-clear_id`
+
+                        clearSpan.innerText = "Clear" // TODO translate
+                        clearSpan.style.marginLeft = "0.25rem"
+
+                        clearLabel.appendChild(clearInput)
+                        clearLabel.appendChild(clearSpan)
+
+                        const changeP = document.createElement("p")
+                        changeP.innerText = "Change" // TODO translate
+
+                        parent.insertBefore(changeP, field)
+                        parent.insertBefore(clearLabel, changeP)
+                        parent.insertBefore(p, clearLabel)
+                    }, 250)
+                }
             });
 
             if (!isTemplate) {

@@ -1,5 +1,8 @@
+from django.conf import settings
+from django.db.models import fields
+
 from modeltrans.conf import get_default_language
-from modeltrans.fields import TranslatedVirtualField
+from modeltrans.fields import TranslatedVirtualField, SUPPORTED_FIELDS
 from modeltrans.translator import get_i18n_field
 
 
@@ -15,6 +18,27 @@ class TabbedLanguageMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._i18n_field = get_i18n_field(self.model)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj=None, **kwargs)
+        if not obj or fields.files.FileField not in SUPPORTED_FIELDS:
+            return form
+
+        languages = [l.replace("-", "_") for l, __ in settings.LANGUAGES]
+
+        for field in form.base_fields:
+            default_field = None
+            for lang in languages:
+                if field.endswith(f"_{lang}"):
+                    default_field = field[0:-len(f"_{lang}")]
+                    break
+
+            if default_field:
+                value = obj.i18n.get(field, getattr(obj, default_field, None))
+                form.base_fields[field].widget.attrs["data-i18n-href"] = settings.BASE_URL + f"/{value}"
+                form.base_fields[field].widget.attrs["data-i18n-value"] = value
+
+        return form
 
     def formfield_for_dbfield(self, db_field, request=None, **kwargs):
         field = super().formfield_for_dbfield(db_field, request, **kwargs)
