@@ -150,11 +150,18 @@
             let helptext = null;
             let fileFields = {}
             if (defaultField.parentNode.querySelector("input[type=file]")) {
-                fileFields[defaultField.name] = defaultField.parentNode
-                document.querySelectorAll(`.form-row.field-${defaultField.name} input[type=file]`)
-                    .forEach( n => {
+                let rowName = defaultField.name
+                fileFields[rowName] = defaultField.parentNode
+                const match = rowName.match(/^([a-zA-Z][^\s-]*)-([0-9]+)-([^\s-]+$)/)
+                if (Array.isArray(match)) {
+                    rowName =  match.length > 3 ? match[3] : rowName
+                }
+                document.querySelectorAll(`.form-row.field-${rowName} input[type=file]`).forEach( n => {
+                    // only those with values
+                    if (n.parentNode.classList.contains("file-upload")) {
                         fileFields[n.name] = n.parentNode
-                    })
+                    }
+                })
             }
 
             if (defaultField) {
