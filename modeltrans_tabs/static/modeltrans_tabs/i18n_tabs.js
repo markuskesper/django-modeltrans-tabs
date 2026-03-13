@@ -146,6 +146,15 @@
 
             let errorlist = null;
             let helptext = null;
+            let fileFields = {}
+            if (defaultField.parentNode.querySelector("input[type=file]")) {
+                fileFields[defaultField.name] = defaultField.parentNode
+                document.querySelectorAll(`.form-row.field-${defaultField.name} input[type=file]`)
+                    .forEach( n => {
+                        fileFields[n.name] = n.parentNode
+                    })
+            }
+
             if (defaultField) {
                 const groupLabel = document.createElement("label");
                 groupLabel.textContent = defaultField.labels.length ? defaultField.labels[0].textContent : "";
@@ -220,66 +229,14 @@
                     }
                 }
 
-                if (field.type === "file" && field.dataset?.i18nHref && field.dataset?.i18nValue) {
-                    setTimeout(() => {
-                        const fieldParent = field.parentNode
-                        const name = field.name
-                        const fileContainer = document.createElement("p")
-                        const inputContainer = document.createElement("p")
-                        
-                        const fileLabel = document.createElement("b")
-                        const link = document.createElement("a")
-
-                        const clearLabel = document.createElement("label")
-                        const clearInput = document.createElement("input")
-                        const clearText = document.createElement("span")
-                        const changeLabel = document.createElement("b")
-
-                        const fontSize = "0.7rem"
-
-                        fileContainer.style.display = "inline-flex"
-                        fileContainer.style.padding = "0"
-                        fileContainer.style.margin = "0"
-                        inputContainer.style.padding = "0"
-                        inputContainer.style.margin = "0"
-
-                        fileLabel.innerText = "Currently:" // TODO translate
-                        fileLabel.style.fontSize = fontSize
-                        fileLabel.style.color = "var(--body-quiet-color)"
-                        link.href = field.dataset?.i18nHref
-                        link.innerText = field.dataset?.i18nValue
-                        link.style.marginLeft = "0.25rem"
-                        link.style.fontSize = fontSize
-
-                        clearInput.type = "checkbox"
-                        clearInput.name = `${name}-clear`
-                        clearInput.id = `${name}-clear_id`
-                        clearInput.style.marginLeft = "1.5rem"
-
-                        clearLabel.style.display = "inline-flex"
-                        clearLabel.style.padding = "0"
-
-                        clearText.innerText = "Clear" // TODO translate
-                        clearText.style.marginLeft = "0.25rem"
-                        clearText.style.fontSize = fontSize
-
-                        changeLabel.innerText = "Change:" // TODO translate
-                        changeLabel.style.color = "var(--body-quiet-color)"
-                        changeLabel.style.fontSize = fontSize
-
-                        clearLabel.appendChild(clearInput)
-                        clearLabel.appendChild(clearText)
-
-                        fileContainer.appendChild(fileLabel)
-                        fileContainer.appendChild(link)
-                        fileContainer.appendChild(clearLabel)
-
-                        inputContainer.appendChild(changeLabel)
-                        inputContainer.appendChild(field)
-
-                        fieldParent.appendChild(fileContainer)
-                        fieldParent.appendChild(inputContainer)
-                    }, 250)
+                if (field.type === "file" && Object.keys(fileFields).indexOf(field.name) >= 0) {
+                    const repl = fileFields[field.name]
+                    const fieldParent = field.parentNode
+                    fieldParent.appendChild(repl)
+                    if (repl.querySelector("input[type=file]")) {
+                        repl.querySelector("input[type=file]").remove()
+                    }
+                    repl.appendChild(field)
                 }
             });
 
