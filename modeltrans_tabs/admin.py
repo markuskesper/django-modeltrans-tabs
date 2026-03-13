@@ -1,5 +1,9 @@
 from django.conf import settings
 from django.db.models import fields
+from django.db.models.fields.files import FileField
+from django.core.files.storage import storages
+from django.utils.translation import gettext_lazy as _
+from urllib.parse import urljoin
 
 from modeltrans.conf import get_default_language
 from modeltrans.fields import TranslatedVirtualField, SUPPORTED_FIELDS
@@ -33,10 +37,19 @@ class TabbedLanguageMixin:
                     default_field = field[0:-len(f"_{lang}")]
                     break
 
-            if default_field:
-                value = obj.i18n.get(field, getattr(obj, default_field, None))
-                form.base_fields[field].widget.attrs["data-i18n-href"] = settings.BASE_URL + f"/{value}"
-                form.base_fields[field].widget.attrs["data-i18n-value"] = value
+            if default_field and self.model:
+                model_field = getattr(getattr(self.model, default_field, None), "field", None)
+                if isinstance(model_field, FileField):
+                    storage = getattr(model_field, "storage", storages["default"])
+                    value = obj.i18n.get(field, getattr(obj, default_field, None))
+                    form.base_fields[field].widget.attrs["data-i18n-href"] = urljoin(
+                        getattr(storage, "base_url", settings.BASE_URL),
+                        str(value),
+                    )
+                    form.base_fields[field].widget.attrs["data-i18n-value"] = value
+                    form.base_fields[field].widget.attrs["data-i18n-currentlabel"] = _("Currently:")
+                    form.base_fields[field].widget.attrs["data-i18n-clearlabel"] = _("Clear")
+                    form.base_fields[field].widget.attrs["data-i18n-changelabel"] = _("Change:")
 
         return form
 

@@ -222,38 +222,63 @@
 
                 if (field.type === "file" && field.dataset?.i18nHref && field.dataset?.i18nValue) {
                     setTimeout(() => {
+                        const fieldParent = field.parentNode
                         const name = field.name
-                        const p = document.createElement("p")
-                        const spanHeading = document.createElement("span")
+                        const fileContainer = document.createElement("p")
+                        const inputContainer = document.createElement("p")
+                        
+                        const fileLabel = document.createElement("b")
                         const link = document.createElement("a")
-
-                        spanHeading.innerText = "Currently:" // TODO translate
-                        link.href = field.dataset?.i18nHref
-                        link.innerText = field.dataset?.i18nValue
-
-                        p.appendChild(spanHeading)
-                        p.appendChild(link)
 
                         const clearLabel = document.createElement("label")
                         const clearInput = document.createElement("input")
-                        const clearSpan = document.createElement("span")
+                        const clearText = document.createElement("span")
+                        const changeLabel = document.createElement("b")
+
+                        const fontSize = "0.7rem"
+
+                        fileContainer.style.display = "inline-flex"
+                        fileContainer.style.padding = "0"
+                        fileContainer.style.margin = "0"
+                        inputContainer.style.padding = "0"
+                        inputContainer.style.margin = "0"
+
+                        fileLabel.innerText = "Currently:" // TODO translate
+                        fileLabel.style.fontSize = fontSize
+                        fileLabel.style.color = "var(--body-quiet-color)"
+                        link.href = field.dataset?.i18nHref
+                        link.innerText = field.dataset?.i18nValue
+                        link.style.marginLeft = "0.25rem"
+                        link.style.fontSize = fontSize
 
                         clearInput.type = "checkbox"
                         clearInput.name = `${name}-clear`
                         clearInput.id = `${name}-clear_id`
+                        clearInput.style.marginLeft = "1.5rem"
 
-                        clearSpan.innerText = "Clear" // TODO translate
-                        clearSpan.style.marginLeft = "0.25rem"
+                        clearLabel.style.display = "inline-flex"
+                        clearLabel.style.padding = "0"
+
+                        clearText.innerText = "Clear" // TODO translate
+                        clearText.style.marginLeft = "0.25rem"
+                        clearText.style.fontSize = fontSize
+
+                        changeLabel.innerText = "Change:" // TODO translate
+                        changeLabel.style.color = "var(--body-quiet-color)"
+                        changeLabel.style.fontSize = fontSize
 
                         clearLabel.appendChild(clearInput)
-                        clearLabel.appendChild(clearSpan)
+                        clearLabel.appendChild(clearText)
 
-                        const changeP = document.createElement("p")
-                        changeP.innerText = "Change" // TODO translate
+                        fileContainer.appendChild(fileLabel)
+                        fileContainer.appendChild(link)
+                        fileContainer.appendChild(clearLabel)
 
-                        parent.insertBefore(changeP, field)
-                        parent.insertBefore(clearLabel, changeP)
-                        parent.insertBefore(p, clearLabel)
+                        inputContainer.appendChild(changeLabel)
+                        inputContainer.appendChild(field)
+
+                        fieldParent.appendChild(fileContainer)
+                        fieldParent.appendChild(inputContainer)
                     }, 250)
                 }
             });
