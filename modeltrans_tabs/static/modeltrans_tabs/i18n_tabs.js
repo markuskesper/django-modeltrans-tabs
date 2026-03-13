@@ -241,9 +241,10 @@
                 if (field.type === "file" && Object.keys(fileFields).indexOf(field.name) >= 0) {
                     const repl = fileFields[field.name]
                     const fieldParent = field.parentNode
+                    const defaultFileInp = repl.querySelector("input[type=file]")
                     fieldParent.appendChild(repl)
-                    if (repl.querySelector("input[type=file]")) {
-                        repl.querySelector("input[type=file]").remove()
+                    if (defaultFileInp) {
+                        defaultFileInp.remove()
                     }
                     repl.appendChild(field)
                 }
