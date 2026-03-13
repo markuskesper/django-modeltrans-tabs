@@ -34,8 +34,10 @@
                         }
                     });
 
-                    field.focus();
-                    field.selectionStart = field.value.length;
+                    if (field.type !== "file") {
+                        field.focus();
+                        field.selectionStart = field.value.length;
+                    }
                 });
             }
         });
