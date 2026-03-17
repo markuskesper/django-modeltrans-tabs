@@ -149,7 +149,7 @@
             let errorlist = null;
             let helptext = null;
             let fileFields = {}
-            if (defaultField.parentNode.querySelector("input[type=file]")) {
+            if (defaultField?.parentNode?.querySelector("input[type=file]")) {
                 let rowName = defaultField.name
                 fileFields[rowName] = defaultField.parentNode
                 const match = rowName.match(/^([a-zA-Z][^\s-]*)-([0-9]+)-([^\s-]+$)/)
