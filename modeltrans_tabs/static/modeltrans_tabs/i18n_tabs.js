@@ -124,7 +124,7 @@
                 const currentLang = field?.dataset?.i18nLang
                 defaultName = field.name.substring(0, field.name.length - 1 - currentLang.length)
                 inlineId = defaultName.substring(0, defaultName.length - 1 - translatedField.length)
-                if (document.querySelector(`.inline-related#${inlineId}`)) {
+                if (inlineId && document.querySelector(`.inline-related#${inlineId}`)) {
                     translatedField = inlineId
                 }
             }
