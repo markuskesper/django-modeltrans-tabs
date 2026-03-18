@@ -126,7 +126,7 @@
                 inlineId = defaultName.substring(0, defaultName.length - 1 - translatedField.length)
                 if (inlineId) {
                     if (document.querySelector(`.inline-related#${inlineId}`)) {
-                        translatedField = inlineId
+                        translatedField = defaultName
                     }
                 }
             }
